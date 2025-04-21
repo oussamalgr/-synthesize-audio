@@ -19,7 +19,14 @@ add_executable(62227 main.cpp
         ./libraries/imgui/imgui_widgets.cpp
         ./libraries/imgui/imgui_tables.cpp
         ./libraries/imgui/backends/imgui_impl_sdl3.cpp
-        ./libraries/imgui/backends/imgui_impl_sdlrenderer3.cpp)
+        ./libraries/imgui/backends/imgui_impl_sdlrenderer3.cpp
+        Envelope.cpp
+        Envelope.h
+        Oscillator.cpp
+        Oscillator.h
+        SynthParams.cpp
+        SynthParams.h
+)
 
 if (APPLE)
     target_link_libraries(62227 PRIVATE
