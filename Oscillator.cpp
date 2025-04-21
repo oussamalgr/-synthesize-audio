@@ -23,11 +23,9 @@ void Oscillator::setEnabled(const bool enabled) {
 
 void Oscillator::fillBuffer(float *buffer, unsigned long framesPerBuffer, uint32_t sampleRate) {
     if (!enabled) {
-        for (unsigned int i = 0; i < framesPerBuffer; i++) {
-            buffer[i] = 0.0f;
-        }
         return;
     }
+
     float currentFrequency = frequency + frequencyOffset;
     const float phaseStep = TWO_PI * currentFrequency / sampleRate;
 
@@ -36,7 +34,6 @@ void Oscillator::fillBuffer(float *buffer, unsigned long framesPerBuffer, uint32
         buffer[i * 2] += sample;
         buffer[i * 2 + 1] += sample;
 
-        // Avancer la phase pour le prochain échantillon
         phase = std::fmod(phase + phaseStep, TWO_PI);
     }
 }

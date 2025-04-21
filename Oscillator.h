@@ -15,18 +15,13 @@ class Oscillator {
 public:
     Oscillator();
 
-    // Définit la fréquence de l'oscillateur
     void setWaveform(WaveType waveform);
     void setFrequency(float frequency);
     void setFrequencyOffset(float offset);
     void setEnabled(bool enabled);
-
-
     void fillBuffer(float* buffer, unsigned long framesPerBuffer, uint32_t sampleRate);
 
-
 private:
-
     float frequency = 440.0f;
 
     float frequencyOffset =0.0f;
