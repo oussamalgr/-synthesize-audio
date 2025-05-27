@@ -13,6 +13,10 @@ add_executable(62227 main.cpp
         MainWindow.h
         AudioGenerator.cpp
         AudioGenerator.h
+        Filter.h
+        Filter.cpp
+        Delay.h
+        Delay.cpp
         ./libraries/imgui/imgui.cpp
         ./libraries/imgui/imgui_demo.cpp
         ./libraries/imgui/imgui_draw.cpp

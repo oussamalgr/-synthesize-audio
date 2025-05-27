@@ -5,14 +5,13 @@ class Envelope {
 private:
 
     float currentValue;
-    float targetValue;
     float attack;
     float release;
     bool note_pressed;
 
 public:
     Envelope();
-    
+
     void setAttack(float seconds);
     void setRelease(float seconds);
     void noteOn();

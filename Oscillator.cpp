@@ -1,5 +1,6 @@
 #include "Oscillator.h"
 #include <cmath>
+#include <iostream>
 
 Oscillator::Oscillator() = default;
 
@@ -29,7 +30,7 @@ void Oscillator::fillBuffer(float *buffer, unsigned long framesPerBuffer, uint32
     float currentFrequency = frequency + frequencyOffset;
     const float phaseStep = TWO_PI * currentFrequency / sampleRate;
 
-    for (unsigned  i = 0; i < framesPerBuffer; i++) {
+    for (unsigned long i = 0; i < framesPerBuffer; i++) {
         float sample = generateSample(phase);
         buffer[i * 2] += sample;
         buffer[i * 2 + 1] += sample;
@@ -58,6 +59,7 @@ float Oscillator::generateSample(float phase) const{
 
 float Oscillator::generateSine(float phase) const {
     return AMPLITUDE * std::cos(phase);
+
 }
 
 float Oscillator::generateSquare(float phase) const {

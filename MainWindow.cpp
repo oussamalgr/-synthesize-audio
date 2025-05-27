@@ -20,22 +20,28 @@ constexpr ImGuiKey keyMap[13] = {
 };
 
 
-constexpr float NOTE_FREQUENCIES[13] = {
-    440.0f, // La
-    466.16f, // La#
-    493.88f, // Si
-    523.25f, // Do
-    554.37f, // Do#
-    587.33f, // Ré
-    622.25f, // Ré#
-    659.26f, // Mi
-    698.46f, // Fa
-    739.99f, // Fa#
-    783.99f, // Sol
-    830.61f, // Sol#
-    880.00f // La
-};
 
+constexpr float calculateNoteFrequency(float note) {
+    return 220.0f * std::pow(2.0f,note/12.0f);
+
+}
+
+
+constexpr float NOTE_FREQUENCIES[13] = {
+    calculateNoteFrequency(0.0f),   // 220.00 Hz
+    calculateNoteFrequency(1.0f),   // 233.08 Hz
+    calculateNoteFrequency(2.0f),   // 246.94 Hz
+    calculateNoteFrequency(3.0f),   // 261.63 Hz
+    calculateNoteFrequency(4.0f),   // 277.18 Hz
+    calculateNoteFrequency(5.0f),   // 293.66 Hz
+    calculateNoteFrequency(6.0f),   // 311.13 Hz
+    calculateNoteFrequency(7.0f),   // 329.63 Hz
+    calculateNoteFrequency(8.0f),   // 349.23 Hz
+    calculateNoteFrequency(9.0f),   // 369.99 Hz
+    calculateNoteFrequency(10.0f),  // 392.00 Hz
+    calculateNoteFrequency(11.0f),  // 415.30 Hz
+    calculateNoteFrequency(12.0f)   // 440.00 Hz
+};
 
 void MainWindow::init() {
     // Setup SDL
@@ -214,7 +220,7 @@ void MainWindow::draw() {
     ImGui::SliderFloat("Filter cutoff", &filter_cutoff, 20.0f, 20000.0f);
 
     ImGui::Spacing();
-    ImGui::SliderFloat("Filter resonance", &filter_resonance, 20.0f, 20000.0f);
+    ImGui::SliderFloat("Filter resonance", &filter_resonance, 0.0f, 1.0f);
 
     ImGui::Spacing();
     ImGui::SliderFloat("Delay time", &delay_time, 0.0f, 1.0f);

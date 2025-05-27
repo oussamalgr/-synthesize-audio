@@ -13,11 +13,9 @@ constexpr float AMPLITUDE{0.5f};
 constexpr int SAMPLE_RATE{44100};
 
 
-
-AudioGenerator::AudioGenerator(SharedSynthParameters& sharedParams)
-    : shared(sharedParams) {
+AudioGenerator::AudioGenerator(SharedSynthParameters &sharedParams): currentTimeInSeconds(0.0),
+                                                                     shared(sharedParams) {
 }
-
 
 
 void AudioGenerator::init() {
@@ -56,21 +54,24 @@ int AudioGenerator::audioCallback(const void *inputBuffer,
                                   PaStreamCallbackFlags statusFlags,
                                   void *userData) {
     auto *out = reinterpret_cast<float *>(outputBuffer);
-    auto *audioGen = static_cast<AudioGenerator*>(userData);
+    auto *audioGen = static_cast<AudioGenerator *>(userData);
 
+
+    // The 'out' buffer is reused on each audioCallback call.
+    // If not cleared, it may contain leftover values from previous use.
+    // Resetting it avoids noise, artifacts, or unintended sound.
     for (unsigned long i = 0; i < framesPerBuffer * 2; ++i) {
         out[i] = 0.0f;
     }
 
-    audioGen ->processAudio(out,framesPerBuffer);
+    audioGen->processAudio(out, framesPerBuffer);
 
 
     return 0;
 }
 
 
-
-void AudioGenerator::processAudio(float* out, unsigned long frame_per_buffer) {
+void AudioGenerator::processAudio(float *out, unsigned long frame_per_buffer) {
     SynthPOD localParams;
 
     // will only lock when it's time to copy the params.
@@ -98,15 +99,20 @@ void AudioGenerator::processAudio(float* out, unsigned long frame_per_buffer) {
     }
 
 
-    applyEffects(out,frame_per_buffer,localParams);
+    applyEffects(out, frame_per_buffer, localParams);
 
+
+    // Apply global output gain to reduce the overall volume of the signal.
+    // Helps prevent clipping and keeps the output at a controlled level.
+    constexpr float OUTPUT_GAIN = 0.2f;
+    for (unsigned long i = 0; i < frame_per_buffer * 2; ++i) {
+        out[i] *= OUTPUT_GAIN;
+    }
 
 }
 
 
-
-void AudioGenerator::applyEffects(float* mixBuffer,unsigned long frame_per_buffer,const SynthPOD& params) {
-
+void AudioGenerator::applyEffects(float *mixBuffer, unsigned long frame_per_buffer, const SynthPOD &params) {
     if (params.noteOn) {
         envelope.noteOn();
     } else {
@@ -117,8 +123,11 @@ void AudioGenerator::applyEffects(float* mixBuffer,unsigned long frame_per_buffe
     envelope.setRelease(params.release);
     envelope.applyToBuffer(mixBuffer, frame_per_buffer);
 
+    filter.setCutoff(params.filterCutoff);
+    filter.setResonance(params.filterResonance);
+    filter.applyToBuffer(mixBuffer, frame_per_buffer);
+
+
+
+
 }
-
-
-
-
