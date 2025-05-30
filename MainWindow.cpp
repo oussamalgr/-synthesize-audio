@@ -37,21 +37,21 @@ constexpr float NOTE_FREQUENCIES[13] = {
     calculateNoteFrequency(8.0f),
     calculateNoteFrequency(9.0f),
     calculateNoteFrequency(10.0f),
-    calculateNoteFrequency(11.0f),
-    calculateNoteFrequency(12.0f)
+    calculateNoteFrequency(11.0f)
 };
 
 
-MainWindow::MainWindow(SharedSynthParameters &sharedParams) : delay_time(0.1f),
+MainWindow::MainWindow(SharedSynthParameters &sharedParams) : current_item(0),
+                                                              delay_time(0.1f),
                                                               delay_mix(0.0f),
                                                               attack(0.0f),
-                                                              current_item(0),
                                                               filter_cutoff(20000.0f),
                                                               filter_resonance(0.0f),
                                                               release(0.0f),
                                                               frequency(0.0f),
                                                               OSC1(false),
                                                               OSC2(false),
+                                                              number_of_notes(12),
                                                               type(WaveType::SINE),
                                                               shared(sharedParams) {
 }
@@ -149,7 +149,7 @@ void MainWindow::run() {
 
 
 void MainWindow::handleKeyPress() const {
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < number_of_notes; i++) {
         if (ImGui::IsKeyPressed(keyMap[i])) {
             playNote(i);
             break;
@@ -158,7 +158,7 @@ void MainWindow::handleKeyPress() const {
 }
 
 void MainWindow::handleKeyRelease() const {
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < number_of_notes; i++) {
         if (ImGui::IsKeyReleased(keyMap[i])) {
             stopNote();
             break;
@@ -168,7 +168,7 @@ void MainWindow::handleKeyRelease() const {
 
 
 void MainWindow::playNote(unsigned int noteIndex) const {
-    if (noteIndex < 13) {
+    if (noteIndex < number_of_notes) {
         Guard guard(shared.mtx);
         shared.activeFrequency = NOTE_FREQUENCIES[noteIndex];
         shared.noteOn = true;
@@ -240,7 +240,7 @@ void MainWindow::draw() {
     ImGui::SliderFloat("Delay mix", &delay_mix, 0.0f, 1.0f);
 
 
-    for (unsigned int i = 0; i < 13; ++i) {
+    for (unsigned int i = 0; i < number_of_notes; ++i) {
         if (ImGui::Button(std::to_string(i + 1).c_str(), ImVec2(40, 40))) {
         }
 

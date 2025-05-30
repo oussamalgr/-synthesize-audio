@@ -15,7 +15,7 @@ constexpr float MAX_DELAY_TIME = 2.0f;  // 2 seconds maximum
 Delay::Delay() : writeIndex(0),
                  readIndex(0),
                  delayTime(0.1f),
-                 delayMix(0.0f) {   /
+                 delayMix(0.0f) {
 
     // Multiplying MAX_DELAY_TIME * SAMPLE_RATE gives the maximum number of mono samples required to store a delay of MAX_DELAY_TIME seconds.
     bufferSize = static_cast<size_t>(MAX_DELAY_TIME * AudioConstants::SAMPLE_RATE);

@@ -27,6 +27,7 @@ private:
     float frequency;
     bool OSC1;
     bool OSC2;
+    int number_of_notes;
     WaveType type;
     SharedSynthParameters& shared;
 
