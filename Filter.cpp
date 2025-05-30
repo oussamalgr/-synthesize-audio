@@ -3,11 +3,10 @@
 //
 
 #include "Filter.h"
-
+#include "AudioConstants.h"
 #include <iostream>
 #include <math.h>
 #include <ostream>
-constexpr int SAMPLE_RATE{44100};
 
 Filter::Filter() : cutoff(20000.0f),
                    resonance(0.0f),
@@ -36,7 +35,7 @@ void Filter::calculateInternParams() {
     float res = resonance;
     if (res >= 0.99f) res = 0.99f;
     float q = 0.5 / (1.0 - res);
-    float omega = 2.0 * M_PI * cutoff / SAMPLE_RATE;
+    float omega = 2.0 * M_PI * cutoff / AudioConstants::SAMPLE_RATE;
     float alpha = std::sin(omega) / (2.0 * q);
     float cosw = std::cos(omega);
     float norm = 1.0 / (1.0 + alpha);
@@ -50,6 +49,7 @@ void Filter::calculateInternParams() {
 
 
 void Filter::applyToBuffer(float *buffer, unsigned long framesPerBuffer) {
+
     for (unsigned long i = 0; i < framesPerBuffer; i++) {
         float inputL = buffer[i * 2];
         float outputL = a0 * inputL + a1 * x1L + a2 * x2L - b1 * y1L - b2 * y2L;

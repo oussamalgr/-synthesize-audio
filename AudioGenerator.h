@@ -19,7 +19,6 @@ private:
                               PaStreamCallbackFlags statusFlags,
                               void *userData );
 
-    double currentTimeInSeconds {0.0};
     void applyEffects(float* mixBuffer,unsigned long frame_per_buffer,const SynthPOD& params);
     Filter filter;
     Oscillator OSC1;

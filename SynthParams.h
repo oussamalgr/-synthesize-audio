@@ -33,15 +33,12 @@ struct SynthPOD {
     float activeFrequency{0.0f};
     bool noteOn{false};
 
-    SynthPOD &operator=(const SynthPOD &other);
 
     SynthPOD &operator=(const SharedSynthParameters &other);
 };
 
-struct SharedSynthParameters {
+struct SharedSynthParameters: SynthPOD {
     mutable std::mutex mtx;
-    SynthPOD params;
-    SharedSynthParameters() = default;
     SharedSynthParameters &operator=(const SynthPOD &other);
 };
 

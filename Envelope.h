@@ -11,7 +11,6 @@ private:
 
 public:
     Envelope();
-
     void setAttack(float seconds);
     void setRelease(float seconds);
     void noteOn();

@@ -20,28 +20,41 @@ constexpr ImGuiKey keyMap[13] = {
 };
 
 
-
 constexpr float calculateNoteFrequency(float note) {
-    return 220.0f * std::pow(2.0f,note/12.0f);
-
+    return 220.0f * std::pow(2.0f, note / 12.0f);
 }
 
 
 constexpr float NOTE_FREQUENCIES[13] = {
-    calculateNoteFrequency(0.0f),   // 220.00 Hz
-    calculateNoteFrequency(1.0f),   // 233.08 Hz
-    calculateNoteFrequency(2.0f),   // 246.94 Hz
-    calculateNoteFrequency(3.0f),   // 261.63 Hz
-    calculateNoteFrequency(4.0f),   // 277.18 Hz
-    calculateNoteFrequency(5.0f),   // 293.66 Hz
-    calculateNoteFrequency(6.0f),   // 311.13 Hz
-    calculateNoteFrequency(7.0f),   // 329.63 Hz
-    calculateNoteFrequency(8.0f),   // 349.23 Hz
-    calculateNoteFrequency(9.0f),   // 369.99 Hz
-    calculateNoteFrequency(10.0f),  // 392.00 Hz
-    calculateNoteFrequency(11.0f),  // 415.30 Hz
-    calculateNoteFrequency(12.0f)   // 440.00 Hz
+    calculateNoteFrequency(0.0f),
+    calculateNoteFrequency(1.0f),
+    calculateNoteFrequency(2.0f),
+    calculateNoteFrequency(3.0f),
+    calculateNoteFrequency(4.0f),
+    calculateNoteFrequency(5.0f),
+    calculateNoteFrequency(6.0f),
+    calculateNoteFrequency(7.0f),
+    calculateNoteFrequency(8.0f),
+    calculateNoteFrequency(9.0f),
+    calculateNoteFrequency(10.0f),
+    calculateNoteFrequency(11.0f),
+    calculateNoteFrequency(12.0f)
 };
+
+
+MainWindow::MainWindow(SharedSynthParameters &sharedParams) : delay_time(0.1f),
+                                                              delay_mix(0.0f),
+                                                              attack(0.0f),
+                                                              current_item(0),
+                                                              filter_cutoff(20000.0f),
+                                                              filter_resonance(0.0f),
+                                                              release(0.0f),
+                                                              frequency(0.0f),
+                                                              OSC1(false),
+                                                              OSC2(false),
+                                                              type(WaveType::SINE),
+                                                              shared(sharedParams) {
+}
 
 void MainWindow::init() {
     // Setup SDL
@@ -155,16 +168,16 @@ void MainWindow::handleKeyRelease() const {
 
 
 void MainWindow::playNote(unsigned int noteIndex) const {
-    if (noteIndex >= 0 && noteIndex < 13) {
+    if (noteIndex < 13) {
         Guard guard(shared.mtx);
-        shared.params.activeFrequency = NOTE_FREQUENCIES[noteIndex];
-        shared.params.noteOn = true;
+        shared.activeFrequency = NOTE_FREQUENCIES[noteIndex];
+        shared.noteOn = true;
     }
 }
 
 void MainWindow::stopNote() const {
     Guard guard(shared.mtx);
-    shared.params.noteOn = false;
+    shared.noteOn = false;
 }
 
 void MainWindow::draw() {
@@ -176,7 +189,7 @@ void MainWindow::draw() {
 
     handleKeyPress();
     handleKeyRelease();
-    ImGui::Checkbox("OCS 1", &OCS1);
+    ImGui::Checkbox("OCS 1", &OSC1);
 
     //todo : maybe put this code with the switch in another function
     if (ImGui::BeginCombo("##combo", combo[current_item])) {
@@ -194,8 +207,6 @@ void MainWindow::draw() {
     }
 
 
-
-
     switch (current_item) {
         case 0: type = WaveType::SINE;
             break;
@@ -209,7 +220,7 @@ void MainWindow::draw() {
     // todo : Create a function for the sliders
     ImGui::SliderFloat("OSC1 Frequency Offset", &frequency, -5.0f, 5.0f);
 
-    ImGui::Checkbox("OCS 2", &OCS2);
+    ImGui::Checkbox("OCS 2", &OSC2);
 
     ImGui::SliderFloat("Attack", &attack, 0.0f, 1.0f);
 
@@ -229,7 +240,6 @@ void MainWindow::draw() {
     ImGui::SliderFloat("Delay mix", &delay_mix, 0.0f, 1.0f);
 
 
-
     for (unsigned int i = 0; i < 13; ++i) {
         if (ImGui::Button(std::to_string(i + 1).c_str(), ImVec2(40, 40))) {
         }
@@ -246,16 +256,16 @@ void MainWindow::draw() {
     // This prevents race conditions between the UI thread and the audio thread
     {
         Guard guard(shared.mtx);
-        shared.params.osc1Enabled = OCS1;
-        shared.params.osc2Enabled = OCS2;
-        shared.params.osc1WaveType = type;
-        shared.params.osc1FrequencyOffset = frequency;
-        shared.params.attack = attack;
-        shared.params.release = release;
-        shared.params.filterCutoff = filter_cutoff;
-        shared.params.filterResonance = filter_resonance;
-        shared.params.delayTime = delay_time;
-        shared.params.delayMix = delay_mix;
+        shared.osc1Enabled = OSC1;
+        shared.osc2Enabled = OSC2;
+        shared.osc1WaveType = type;
+        shared.osc1FrequencyOffset = frequency;
+        shared.attack = attack;
+        shared.release = release;
+        shared.filterCutoff = filter_cutoff;
+        shared.filterResonance = filter_resonance;
+        shared.delayTime = delay_time;
+        shared.delayMix = delay_mix;
     }
 
     ImGui::End();

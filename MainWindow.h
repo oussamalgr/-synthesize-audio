@@ -7,7 +7,7 @@ class MainWindow {
 public :
 
     void init();
-    MainWindow(SharedSynthParameters& sharedParams) : shared(sharedParams) {}
+    MainWindow(SharedSynthParameters& sharedParams);
     void run();
 
 
@@ -16,18 +16,17 @@ private:
     void playNote(unsigned int noteIndex) const;
     void stopNote() const;
     const char *const combo[3] = {"SINE", "SQUARE", "SAW"};
-    int current_item{0};
-    constexpr static int NBTN{14};
+    int current_item;
     constexpr static int song{3};
-    float delay_time{0.1f};
-    float delay_mix{0.0f};
-    float attack{0.0f};
-    float filter_cutoff{20.0f};
-    float filter_resonance{0.0f};
-    float release{0.0f};
-    float frequency{0.0f};
-    bool OCS1= false;
-    bool OCS2 = false;
+    float delay_time;
+    float delay_mix;
+    float attack;
+    float filter_cutoff;
+    float filter_resonance;
+    float release;
+    float frequency;
+    bool OSC1;
+    bool OSC2;
     WaveType type;
     SharedSynthParameters& shared;
 

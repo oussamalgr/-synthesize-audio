@@ -19,25 +19,22 @@ public:
     void setFrequency(float frequency);
     void setFrequencyOffset(float offset);
     void setEnabled(bool enabled);
-    void fillBuffer(float* buffer, unsigned long framesPerBuffer, uint32_t sampleRate);
+    void fillBuffer(float* buffer, unsigned long framesPerBuffer);
 
 private:
-    float frequency = 440.0f;
-
-    float frequencyOffset =0.0f;
-    float phase = 0.0f;
+    float frequency;
+    float frequencyOffset;
+    float phase;
 
     bool enabled;
-    static constexpr float AMPLITUDE = 0.5f;
-    static constexpr float TWO_PI = 2.0f * std::numbers::pi_v<float>;
 
 
-    float generateSine(float phase) const;
-    float generateSquare(float phase) const;
-    float generateSaw(float phase) const;
+    [[nodiscard]] float generateSine(float phase) const;
+    [[nodiscard]] float generateSquare(float phase) const;
+    [[nodiscard]] float generateSaw(float phase) const;
     WaveType waveType;
 
-    float generateSample(float phase) const;
+    [[nodiscard]] float generateSample(float phase) const;
 
 
 };

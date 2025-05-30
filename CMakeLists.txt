@@ -30,6 +30,7 @@ add_executable(62227 main.cpp
         Oscillator.h
         SynthParams.cpp
         SynthParams.h
+        AudioConstants.h
 )
 
 if (APPLE)

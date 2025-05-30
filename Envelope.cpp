@@ -1,7 +1,6 @@
 #include "Envelope.h"
-
+#include "AudioConstants.h"
 #include <iostream>
-constexpr int SAMPLE_RATE{44100};
 
 
 // Documentation  of the code will be completed in a future update
@@ -15,11 +14,11 @@ Envelope::Envelope() : currentValue(0.0f),
 void Envelope::setAttack(float seconds) {
     // seconds the time of the attack
     // seconds * SAMPLE_RATE = total number of samples needed to reach the target (1.0 for attack)
-    attack = seconds > 0.001f ? 1.0f / (seconds * SAMPLE_RATE) : 1.0f / (0.001f * SAMPLE_RATE);
+    attack = seconds > 0.001f ? 1.0f / (seconds * AudioConstants::SAMPLE_RATE) : 1.0f / (0.001f * AudioConstants::SAMPLE_RATE);
 }
 
 void Envelope::setRelease(float seconds) {
-    release = seconds > 0.001f ? 1.0f / (seconds * SAMPLE_RATE) : 1.0f / (0.001f * SAMPLE_RATE);
+    release = seconds > 0.001f ? 1.0f / (seconds * AudioConstants::SAMPLE_RATE) : 1.0f / (0.001f * AudioConstants::SAMPLE_RATE);
 }
 
 void Envelope::noteOn() {

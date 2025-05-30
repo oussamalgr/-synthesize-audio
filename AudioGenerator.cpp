@@ -1,20 +1,11 @@
 #include <iostream>
 #include "AudioGenerator.h"
 #include <cmath>
-
+#include "AudioConstants.h"
 #include "MainWindow.h"
 
-constexpr int FRAMES_PER_BUFFER{256};
 
-
-constexpr float FREQUENCY_BASE{440.0f};
-constexpr float AMPLITUDE{0.5f};
-
-constexpr int SAMPLE_RATE{44100};
-
-
-AudioGenerator::AudioGenerator(SharedSynthParameters &sharedParams): currentTimeInSeconds(0.0),
-                                                                     shared(sharedParams) {
+AudioGenerator::AudioGenerator(SharedSynthParameters &sharedParams): shared(sharedParams) {
 }
 
 
@@ -35,8 +26,8 @@ void AudioGenerator::init() {
                                        0,
                                        2,
                                        paFloat32,
-                                       SAMPLE_RATE,
-                                       FRAMES_PER_BUFFER,
+                                       AudioConstants::SAMPLE_RATE,
+                                       AudioConstants::FRAMES_PER_BUFFER,
                                        audioCallback,
                                        this);
     errorStream = Pa_StartStream(stream);
@@ -56,7 +47,6 @@ int AudioGenerator::audioCallback(const void *inputBuffer,
     auto *out = reinterpret_cast<float *>(outputBuffer);
     auto *audioGen = static_cast<AudioGenerator *>(userData);
 
-
     // The 'out' buffer is reused on each audioCallback call.
     // If not cleared, it may contain leftover values from previous use.
     // Resetting it avoids noise, artifacts, or unintended sound.
@@ -72,13 +62,10 @@ int AudioGenerator::audioCallback(const void *inputBuffer,
 
 
 void AudioGenerator::processAudio(float *out, unsigned long frame_per_buffer) {
-    SynthPOD localParams;
-
     // will only lock when it's time to copy the params.
-    {
-        Guard guard(shared.mtx);
-        localParams = shared.params;
-    }
+
+    SynthPOD localParams = shared;
+
 
     OSC1.setWaveform(localParams.osc1WaveType);
     OSC1.setFrequency(localParams.activeFrequency);
@@ -91,11 +78,11 @@ void AudioGenerator::processAudio(float *out, unsigned long frame_per_buffer) {
 
 
     if (localParams.osc1Enabled) {
-        OSC1.fillBuffer(out, frame_per_buffer, SAMPLE_RATE);
+        OSC1.fillBuffer(out, frame_per_buffer);
     }
 
     if (localParams.osc2Enabled) {
-        OSC2.fillBuffer(out, frame_per_buffer, SAMPLE_RATE);
+        OSC2.fillBuffer(out, frame_per_buffer);
     }
 
 
@@ -104,11 +91,9 @@ void AudioGenerator::processAudio(float *out, unsigned long frame_per_buffer) {
 
     // Apply global output gain to reduce the overall volume of the signal.
     // Helps prevent clipping and keeps the output at a controlled level.
-    constexpr float OUTPUT_GAIN = 0.2f;
     for (unsigned long i = 0; i < frame_per_buffer * 2; ++i) {
-        out[i] *= OUTPUT_GAIN;
+        out[i] *= 0.2f;
     }
-
 }
 
 
@@ -127,7 +112,7 @@ void AudioGenerator::applyEffects(float *mixBuffer, unsigned long frame_per_buff
     filter.setResonance(params.filterResonance);
     filter.applyToBuffer(mixBuffer, frame_per_buffer);
 
-
-
-
+    delay.setDelayMix(params.delayMix);
+    delay.setDelayTime(params.delayTime);
+    delay.applyToBuffer(mixBuffer, frame_per_buffer);
 }
