@@ -8,6 +8,14 @@
 
 #include <numbers>
 
+
+/**
+ * @namespace AudioConstants
+ * @brief Contains constants related to audio processing and system parameters.
+ *
+ * This namespace defines fundamental constants such as sample rate, buffer size,
+ * and important mathematical constants used in audio calculations.
+ */
 namespace AudioConstants {
 
     // Audio system parameters

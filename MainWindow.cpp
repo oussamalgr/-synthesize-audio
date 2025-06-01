@@ -14,18 +14,26 @@ constexpr float FRAMERATE = 60.0f;
 constexpr std::chrono::duration<double, std::milli> TARGET_FRAMETIME(1000.0 / FRAMERATE);
 
 
-constexpr ImGuiKey keyMap[13] = {
+// Number of waveform types available
+constexpr int song = 3;
+
+
+// Keyboard mapping for 12 notes
+constexpr ImGuiKey keyMap[12] = {
     ImGuiKey_Q, ImGuiKey_Z, ImGuiKey_S, ImGuiKey_E, ImGuiKey_D, ImGuiKey_F,
-    ImGuiKey_T, ImGuiKey_G, ImGuiKey_Y, ImGuiKey_H, ImGuiKey_U, ImGuiKey_J, ImGuiKey_K
+    ImGuiKey_T, ImGuiKey_G, ImGuiKey_Y, ImGuiKey_H, ImGuiKey_U, ImGuiKey_J
 };
 
 
-constexpr float calculateNoteFrequency(float note) {
+// Calculates the frequency of a relative note
+constexpr float calculateNoteFrequency(const float note) {
     return 220.0f * std::pow(2.0f, note / 12.0f);
 }
 
 
-constexpr float NOTE_FREQUENCIES[13] = {
+
+// Precomputed frequencies for 12 notes.
+constexpr float NOTE_FREQUENCIES[12] = {
     calculateNoteFrequency(0.0f),
     calculateNoteFrequency(1.0f),
     calculateNoteFrequency(2.0f),
@@ -41,7 +49,7 @@ constexpr float NOTE_FREQUENCIES[13] = {
 };
 
 
-MainWindow::MainWindow(SharedSynthParameters &sharedParams) : current_item(0),
+MainWindow::MainWindow(SharedSynthParameters &sharedParams) : current_type(0),
                                                               delay_time(0.1f),
                                                               delay_mix(0.0f),
                                                               attack(0.0f),
@@ -180,6 +188,26 @@ void MainWindow::stopNote() const {
     shared.noteOn = false;
 }
 
+
+
+void MainWindow::setWaveTypeFromSelection() {
+    switch (current_type) {
+        case 0:
+            type = WaveType::SINE;
+        break;
+        case 1:
+            type = WaveType::SQUARE;
+        break;
+        case 2:
+            type = WaveType::SAW;
+        break;
+        default:
+            type = WaveType::SINE;
+        break;
+    }
+}
+
+
 void MainWindow::draw() {
     ImGui::SetNextWindowPos(ImVec2(50, 40));
     ImGui::SetNextWindowSize(ImVec2(700, 500));
@@ -191,12 +219,11 @@ void MainWindow::draw() {
     handleKeyRelease();
     ImGui::Checkbox("OCS 1", &OSC1);
 
-    //todo : maybe put this code with the switch in another function
-    if (ImGui::BeginCombo("##combo", combo[current_item])) {
+    if (ImGui::BeginCombo("##combo", combo[current_type])) {
         for (int n = 0; n < song; n++) {
-            const bool is_selected = (current_item == n);
+            const bool is_selected = (current_type == n);
             if (ImGui::Selectable(combo[n], is_selected)) {
-                current_item = n;
+                current_type = n;
             }
             if (is_selected) {
                 ImGui::SetItemDefaultFocus();
@@ -207,17 +234,43 @@ void MainWindow::draw() {
     }
 
 
-    switch (current_item) {
-        case 0: type = WaveType::SINE;
-            break;
-        case 1: type = WaveType::SQUARE;
-            break;
-        case 2: type = WaveType::SAW;
-            break;
-        default: type = WaveType::SINE;
+    setWaveTypeFromSelection();
+
+    drawSynthParameters();
+
+
+    for (unsigned int i = 0; i < number_of_notes; ++i) {
+        if (ImGui::Button(std::to_string(i + 1).c_str(), ImVec2(40, 40))) {
+        }
+
+        if (ImGui::IsItemActive()) {
+            playNote(i);
+        } else if (ImGui::IsItemDeactivated()) {
+            stopNote();
+        }
+        ImGui::SameLine();
+    }
+    // Lock the mutex to ensure thread-safe access to shared parameters
+    // This prevents race conditions between the UI thread and the audio thread
+    {
+        Guard guard(shared.mtx);
+        shared.osc1Enabled = OSC1;
+        shared.osc2Enabled = OSC2;
+        shared.osc1WaveType = type;
+        shared.osc1FrequencyOffset = frequency;
+        shared.attack = attack;
+        shared.release = release;
+        shared.filterCutoff = filter_cutoff;
+        shared.filterResonance = filter_resonance;
+        shared.delayTime = delay_time;
+        shared.delayMix = delay_mix;
     }
 
-    // todo : Create a function for the sliders
+    ImGui::End();
+}
+
+
+void MainWindow::drawSynthParameters() {
     ImGui::SliderFloat("OSC1 Frequency Offset", &frequency, -5.0f, 5.0f);
 
     ImGui::Checkbox("OCS 2", &OSC2);
@@ -240,33 +293,4 @@ void MainWindow::draw() {
     ImGui::SliderFloat("Delay mix", &delay_mix, 0.0f, 1.0f);
 
 
-    for (unsigned int i = 0; i < number_of_notes; ++i) {
-        if (ImGui::Button(std::to_string(i + 1).c_str(), ImVec2(40, 40))) {
-        }
-
-        if (ImGui::IsItemActive()) {
-            playNote(i);
-        } else if (ImGui::IsItemDeactivated()) {
-            stopNote();
-        }
-        ImGui::SameLine();
-    }
-
-    // Lock the mutex to ensure thread-safe access to shared parameters
-    // This prevents race conditions between the UI thread and the audio thread
-    {
-        Guard guard(shared.mtx);
-        shared.osc1Enabled = OSC1;
-        shared.osc2Enabled = OSC2;
-        shared.osc1WaveType = type;
-        shared.osc1FrequencyOffset = frequency;
-        shared.attack = attack;
-        shared.release = release;
-        shared.filterCutoff = filter_cutoff;
-        shared.filterResonance = filter_resonance;
-        shared.delayTime = delay_time;
-        shared.delayMix = delay_mix;
-    }
-
-    ImGui::End();
 }
