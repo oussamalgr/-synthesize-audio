@@ -2,8 +2,6 @@
 #include "AudioGenerator.h"
 #include <cmath>
 #include "AudioConstants.h"
-#include "MainWindow.h"
-
 
 
 AudioGenerator::AudioGenerator(SharedSynthParameters &sharedParams): shared(sharedParams) {

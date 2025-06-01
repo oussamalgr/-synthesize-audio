@@ -4,7 +4,7 @@
 #include "Envelope.h"
 #include "Oscillator.h"
 #include "portaudio.h"
-#include "SynthParams.h"
+#include "../shared/SynthParams.h"
 #include "Filter.h"
 #include "Delay.h"
 

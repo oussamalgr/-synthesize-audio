@@ -8,15 +8,15 @@ include_directories("libraries/imgui/backends"
         "libraries/sdl/include"
         "libraries/portaudio/include")
 
-add_executable(62227 main.cpp
-        MainWindow.cpp
-        MainWindow.h
-        AudioGenerator.cpp
-        AudioGenerator.h
-        Filter.h
-        Filter.cpp
-        Delay.h
-        Delay.cpp
+add_executable(62227 src/main.cpp
+        src/ui/MainWindow.cpp
+        src/ui/MainWindow.h
+        src/audio/AudioGenerator.cpp
+        src/audio/AudioGenerator.h
+        src/audio/Filter.h
+        src/audio/Filter.cpp
+        src/audio/Delay.h
+        src/audio/Delay.cpp
         ./libraries/imgui/imgui.cpp
         ./libraries/imgui/imgui_demo.cpp
         ./libraries/imgui/imgui_draw.cpp
@@ -24,13 +24,13 @@ add_executable(62227 main.cpp
         ./libraries/imgui/imgui_tables.cpp
         ./libraries/imgui/backends/imgui_impl_sdl3.cpp
         ./libraries/imgui/backends/imgui_impl_sdlrenderer3.cpp
-        Envelope.cpp
-        Envelope.h
-        Oscillator.cpp
-        Oscillator.h
-        SynthParams.cpp
-        SynthParams.h
-        AudioConstants.h
+        src/audio/Envelope.cpp
+        src/audio/Envelope.h
+        src/audio/Oscillator.cpp
+        src/audio/Oscillator.h
+        src/shared/SynthParams.cpp
+        src/shared/SynthParams.h
+        src/audio/AudioConstants.h
 )
 
 if (APPLE)

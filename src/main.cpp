@@ -1,5 +1,6 @@
-#include "MainWindow.h"
-#include "AudioGenerator.h"
+#include "audio/AudioGenerator.h"
+#include "shared/SynthParams.h"
+#include "ui/MainWindow.h"
 
 int main() {
     SharedSynthParameters shared;

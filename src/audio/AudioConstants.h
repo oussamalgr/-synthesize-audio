@@ -1,7 +1,3 @@
-//
-// Created by oussa on 27-05-25.
-//
-
 
 #ifndef AUDIOCONSTANTS_H
 #define AUDIOCONSTANTS_H

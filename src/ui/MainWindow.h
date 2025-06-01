@@ -1,6 +1,7 @@
 #ifndef TESTINSTRUCT_MAINWINDOW_H
 #define TESTINSTRUCT_MAINWINDOW_H
-#include "SynthParams.h"
+#include "../shared/SynthParams.h"
+#include "../audio/Oscillator.h"
 #include <SDL3/SDL.h>
 
 class MainWindow {

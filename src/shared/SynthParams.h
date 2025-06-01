@@ -4,7 +4,7 @@
 #define SIMPLE_SYNTH_SYNTHPARAMETERS_H
 
 #include <mutex>
-#include "Oscillator.h"
+#include "../audio/Oscillator.h"
 
 using Guard = std::lock_guard<std::mutex>;
 
