@@ -39,8 +39,6 @@ private:
     bool OSC2;
 
 
-    int number_of_notes; // 12
-
     WaveType type; // Enum  => Saw,square,sin
 
     SharedSynthParameters& shared; // shared parameters between audio and ui threads

@@ -1,6 +1,3 @@
-//
-// Created by oussa on 10-04-25.
-//
 
 #ifndef FILTER_H
 #define FILTER_H

@@ -1,11 +1,8 @@
-//
-// Created by oussa on 10-04-25.
-//
 
 #include "Filter.h"
 #include "AudioConstants.h"
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <ostream>
 
 Filter::Filter() : cutoff(20000.0f),

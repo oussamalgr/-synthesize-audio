@@ -3,8 +3,6 @@
 #include <iostream>
 
 
-// Documentation  of the code will be completed in a future update
-
 
 
 Envelope::Envelope() : currentValue(0.0f),

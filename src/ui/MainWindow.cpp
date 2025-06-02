@@ -10,14 +10,14 @@
 # define PI  3.14159265358979323846
 constexpr float FRAMERATE = 60.0f;
 constexpr std::chrono::duration<double, std::milli> TARGET_FRAMETIME(1000.0 / FRAMERATE);
-
+constexpr int DEFAULT_NUMBER_OF_NOTES= 12;
 
 // Number of waveform types available
 constexpr int song = 3;
 
 
 // Keyboard mapping for 12 notes
-constexpr ImGuiKey keyMap[12] = {
+constexpr ImGuiKey keyMap[DEFAULT_NUMBER_OF_NOTES] = {
     ImGuiKey_Q, ImGuiKey_Z, ImGuiKey_S, ImGuiKey_E, ImGuiKey_D, ImGuiKey_F,
     ImGuiKey_T, ImGuiKey_G, ImGuiKey_Y, ImGuiKey_H, ImGuiKey_U, ImGuiKey_J
 };
@@ -31,7 +31,7 @@ constexpr float calculateNoteFrequency(const float note) {
 
 
 // Precomputed frequencies for 12 notes.
-constexpr float NOTE_FREQUENCIES[12] = {
+constexpr float NOTE_FREQUENCIES[DEFAULT_NUMBER_OF_NOTES] = {
     calculateNoteFrequency(0.0f),
     calculateNoteFrequency(1.0f),
     calculateNoteFrequency(2.0f),
@@ -57,7 +57,6 @@ MainWindow::MainWindow(SharedSynthParameters &sharedParams) : current_type(0),
                                                               frequency(0.0f),
                                                               OSC1(false),
                                                               OSC2(false),
-                                                              number_of_notes(12),
                                                               type(WaveType::SINE),
                                                               shared(sharedParams) {
 }
@@ -155,7 +154,7 @@ void MainWindow::run() {
 
 
 void MainWindow::handleKeyPress() const {
-    for (int i = 0; i < number_of_notes; i++) {
+    for (int i = 0; i < DEFAULT_NUMBER_OF_NOTES; i++) {
         if (ImGui::IsKeyPressed(keyMap[i])) {
             playNote(i);
             break;
@@ -164,7 +163,7 @@ void MainWindow::handleKeyPress() const {
 }
 
 void MainWindow::handleKeyRelease() const {
-    for (int i = 0; i < number_of_notes; i++) {
+    for (int i = 0; i < DEFAULT_NUMBER_OF_NOTES; i++) {
         if (ImGui::IsKeyReleased(keyMap[i])) {
             stopNote();
             break;
@@ -174,7 +173,7 @@ void MainWindow::handleKeyRelease() const {
 
 
 void MainWindow::playNote(unsigned int noteIndex) const {
-    if (noteIndex < number_of_notes) {
+    if (noteIndex < DEFAULT_NUMBER_OF_NOTES) {
         Guard guard(shared.mtx);
         shared.activeFrequency = NOTE_FREQUENCIES[noteIndex];
         shared.noteOn = true;
@@ -237,7 +236,7 @@ void MainWindow::draw() {
     drawSynthParameters();
 
 
-    for (unsigned int i = 0; i < number_of_notes; ++i) {
+    for (unsigned int i = 0; i < DEFAULT_NUMBER_OF_NOTES; ++i) {
         if (ImGui::Button(std::to_string(i + 1).c_str(), ImVec2(40, 40))) {
         }
 

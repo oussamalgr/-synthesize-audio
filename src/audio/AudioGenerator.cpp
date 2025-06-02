@@ -62,16 +62,7 @@ int AudioGenerator::audioCallback(const void *inputBuffer,
     return 0;
 }
 
-/**
- * @brief Fill the output buffer with audio from oscillators and applies effects.
- *
- * Generates audio using enabled oscillators, applies envelope, filter, and delay
- * then scales the output control overall volume.
- *
- *
- * @param out output buffer to fill with audio samples.
- * @param frame_per_buffer The number of audio frames to process.
- */
+
 void AudioGenerator::processAudio(float *out, unsigned long frame_per_buffer) {
 
 

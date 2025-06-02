@@ -53,6 +53,7 @@ void Oscillator::fillBuffer(float *buffer, unsigned long framesPerBuffer) {
         buffer[i * 2] += sample; //left channel
         buffer[i * 2 + 1] += sample; //right channel
 
+        // Wrap the phase back into the range  to prevent it from growing indefinitely
         phase = std::fmod(phase + phaseStep, AudioConstants::TWO_PI);
     }
 }

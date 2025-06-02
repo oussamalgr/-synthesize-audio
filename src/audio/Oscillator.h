@@ -86,7 +86,8 @@ private:
      * @return Sawtooth wave sample value scaled by amplitude.
     */
     [[nodiscard]] float generateSaw(float phase) const;
-    WaveType waveType;
+
+    WaveType waveType; // wave type form
 
 
     /**
