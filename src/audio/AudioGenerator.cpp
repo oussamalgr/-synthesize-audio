@@ -65,11 +65,11 @@ int AudioGenerator::audioCallback(const void *inputBuffer,
 
 void AudioGenerator::processAudio(float *out, unsigned long frame_per_buffer) {
 
-
+    SynthPOD localParams;
     // Copy shared parameters into a local SynthPOD variable.
     // Avoids direct access to shared data during processing.
     // Thread-safe => See SynthParams struct for details.
-    SynthPOD localParams = shared;
+    localParams = shared;
 
     //Params for Oscillator 1
     OSC1.setWaveform(localParams.osc1WaveType);
